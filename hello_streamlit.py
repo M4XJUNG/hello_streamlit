@@ -12,21 +12,21 @@ st.header('st.slider')
 
 st.subheader('Slider')
 
-age = st.slider('당신의 나이는?', 0, 130, 25)
+age = st.slider('당신의 나이는?', 0, 130, 26)
 st.write("나는 ", age, '살입니다')
 
 st.header('st.selectbox')
 
 option = st.selectbox(
     '가장 좋아하는 색상은 무엇인가요?',
-    ('파랑', '빨강', '초록'))
+    ('파랑', '빨강', '초록', '하양', '검정'))
 
 st.write('당신이 좋아하는 색상은 ', option)
 
 options = st.multiselect(
     '가장 좋아하는 색상은 무엇인가요',
-    ['초록', '노랑', '빨강', '파랑'],
-    ['노랑', '빨강'])
+    ['초록', '노랑', '빨강', '파랑', '검정', '하양'],
+    ['하양', '검정', '파랑'])
 
 st.write('당신이 선택한 색상:', options)
 
@@ -46,4 +46,5 @@ a + ar + a r^2 + a r^3 + \cdots + a r^{n-1} =
 \sum_{k=0}^{n-1} ar^k =
 a \left(\frac{1-r^{n}}{1-r}\right)
 ''')
+
 
