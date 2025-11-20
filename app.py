@@ -24,7 +24,7 @@ st.title("📚 DuckDB 마당 매니저 (모바일 최적화)")
 st.caption("DuckDB 파일로 독립적으로 구동되는 웹 애플리케이션입니다.")
 
 # 3. 📝 이름 입력 기능
-st.header("고객 정보 및 주문 내역 조회")
+st.header("고객 정보 조회")
 input_name = st.text_input("조회할 고객 이름을 입력하세요:", value="고객님의 이름") # 👈 기본값을 고객님 이름으로 설정
 
 if st.button("조회 시작") or len(input_name) > 0:
@@ -65,4 +65,8 @@ st.sidebar.header("전체 데이터 보기")
 if st.sidebar.checkbox("Customer 테이블 보기"):
     st.sidebar.dataframe(conn.execute("SELECT * FROM Customer").df())
 if st.sidebar.checkbox("Book 테이블 보기"):
+
     st.sidebar.dataframe(conn.execute("SELECT * FROM Book").df())
+
+# 
+st.header("주문 내역")
