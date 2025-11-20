@@ -69,8 +69,11 @@ st.sidebar.header("전체 데이터 보기")
 if st.sidebar.checkbox("Customer 테이블 보기"):
     st.sidebar.dataframe(conn.execute("SELECT * FROM Customer").df())
 if st.sidebar.checkbox("Book 테이블 보기"):
-
     st.sidebar.dataframe(conn.execute("SELECT * FROM Book").df())
+if st.sidebar.checkbox("Orders 테이블 보기"):
+    st.sidebar.dataframe(conn.execute("SELECT * FROM Orders").df())
+
+
 
 # 6. 주문 내역(전체/필터 조회)
 st.header("주문 내역")
@@ -146,5 +149,6 @@ total_customers = conn.execute("SELECT COUNT(*) FROM Customer").fetchone()[0]
 col1.metric("총 매출액", f"{total_sales:,.0f}원")
 col2.metric("총 주문 건수", f"{total_orders}건")
 col3.metric("등록 고객 수", f"{total_customers}명")
+
 
 
