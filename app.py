@@ -72,8 +72,63 @@ if st.sidebar.checkbox("Book 테이블 보기"):
 
     st.sidebar.dataframe(conn.execute("SELECT * FROM Book").df())
 
-# 6. 주문 내역 확인 
+# 6. 주문 내역(전체/필터 조회)
 st.header("주문 내역")
+
+col1, col2 = st.columns(2)
+with col1:
+    order_cust_name = st.text_input(
+        "주문 내역에서 찾을 고객명(부분 일치 허용)",
+        key="order_cust_search"
+    )
+with col2:
+    order_date_range = st.date_input(
+        "주문일 범위 선택(옵션)",
+        value=[],
+        key="order_date_range"
+    )
+
+# 기본 주문 조회 쿼리
+base_query = """
+    SELECT 
+        o.orderid   AS 주문번호,
+        c.name      AS 고객명,
+        b.bookname  AS 서적명,
+        o.saleprice AS 판매가,
+        o.orderdate AS 주문일
+    FROM Orders AS o
+    JOIN Customer AS c ON o.custid = c.custid
+    JOIN Book     AS b ON o.bookid = b.bookid
+"""
+
+conditions = []
+params = []
+
+# 1) 고객명 필터 (LIKE)
+if order_cust_name:
+    conditions.append("c.name LIKE ?")
+    params.append(f"%{order_cust_name}%")
+
+# 2) 날짜 범위 필터
+if isinstance(order_date_range, list) and len(order_date_range) == 2:
+    start, end = order_date_range
+    if start and end:
+        conditions.append("o.orderdate BETWEEN ? AND ?")
+        params.extend([start, end])
+
+# WHERE 절 조합
+if conditions:
+    base_query += " WHERE " + " AND ".join(conditions)
+
+base_query += " ORDER BY o.orderdate DESC, o.orderid DESC"
+
+# 쿼리 실행 & 표시
+df_orders = conn.execute(base_query, params).df()
+
+st.subheader("주문 내역 목록")
+st.dataframe(df_orders, use_container_width=True)
+st.caption(f"총 {len(df_orders)}건의 주문")
+
 
 
 
@@ -91,4 +146,5 @@ total_customers = conn.execute("SELECT COUNT(*) FROM Customer").fetchone()[0]
 col1.metric("총 매출액", f"{total_sales:,.0f}원")
 col2.metric("총 주문 건수", f"{total_orders}건")
 col3.metric("등록 고객 수", f"{total_customers}명")
+
 
