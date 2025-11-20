@@ -72,6 +72,22 @@ if st.sidebar.checkbox("Book 테이블 보기"):
 
     st.sidebar.dataframe(conn.execute("SELECT * FROM Book").df())
 
-# 
+# 6. 주문 내역 확인 
 st.header("주문 내역")
 
+
+
+# 페이지 상단에 추가 추천
+st.header("📈 실시간 현황")
+col1, col2, col3 = st.columns(3)
+
+# 총 주문액 계산
+total_sales = conn.execute("SELECT SUM(saleprice) FROM Orders").fetchone()[0]
+# 총 주문 건수
+total_orders = conn.execute("SELECT COUNT(*) FROM Orders").fetchone()[0]
+# 등록된 고객 수
+total_customers = conn.execute("SELECT COUNT(*) FROM Customer").fetchone()[0]
+
+col1.metric("총 매출액", f"{total_sales:,.0f}원")
+col2.metric("총 주문 건수", f"{total_orders}건")
+col3.metric("등록 고객 수", f"{total_customers}명")
