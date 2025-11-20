@@ -1,22 +1,26 @@
 import streamlit as st
 import duckdb
 import pandas as pd
+import os
 
-# 1. 💾 DB 파일 경로 및 연결 설정
 DB_FILE = 'madang.db'
 
-@st.cache_resource # 배포 환경에서 DB 연결을 한 번만 유지하도록 설정
+# DB 파일 존재 여부 체크 (없으면 바로 중단)
+if not os.path.exists(DB_FILE):
+    st.error(f"DB 파일({DB_FILE})을 찾을 수 없습니다. madang.db 위치를 확인하세요.")
+    st.stop()
+
+@st.cache_resource
 def get_db_connection():
     try:
         conn = duckdb.connect(database=DB_FILE, read_only=False)
         return conn
     except Exception as e:
-        # 오류 발생 시 터미널에 출력
-        print(f"FATAL ERROR: DB Connection failed - {e}")
-        st.error("데이터베이스 연결 실패. 파일을 확인하세요.")
+        st.error(f"데이터베이스 연결 실패: {e}")
         st.stop()
 
 conn = get_db_connection()
+
 
 # 2. 📖 Streamlit 인터페이스
 st.set_page_config(page_title="DuckDB 마당 매니저", layout="wide")
@@ -70,3 +74,4 @@ if st.sidebar.checkbox("Book 테이블 보기"):
 
 # 
 st.header("주문 내역")
+
